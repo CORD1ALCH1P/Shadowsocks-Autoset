@@ -27,7 +27,7 @@ ask_for_input() {
 server_ip=$(ask_for_input "input Server IP")
 server_port=$(ask_for_input "input Server Port" "8388")
 password=$(ask_for_input "input your Password")
-encryption_method=$(ask_for_input "Encryption Method" "aes-256-gcm")
+encryption_method=$(ask_for_input "Encryption Method" "aes-256-cfb")
 
 config_json=$(cat <<EOF
 {
