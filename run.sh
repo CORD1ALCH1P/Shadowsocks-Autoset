@@ -4,7 +4,6 @@
 sudo apt update && sudo apt upgrade -y
 sudo apt install shadowsocks-libev -y
 
-# Функция для запроса у пользователя ввода и проверки, что ввод не пустой
 ask_for_input() {
     local prompt="$1"
     local default_value="$2"
