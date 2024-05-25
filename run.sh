@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Обновление системы и установка shadowsocks-libev
 sudo apt update && sudo apt upgrade -y
 sudo apt install shadowsocks-libev -y
 
