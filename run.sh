@@ -21,18 +21,16 @@ ask_for_input() {
             echo "$var"
             return
         else
-            echo "Ввод не может быть пустым. Пожалуйста, попробуйте еще раз."
+            echo "invalid input"
         fi
     done
 }
 
-# Запрос значений у пользователя
-server_ip=$(ask_for_input "Введите Server IP")
-server_port=$(ask_for_input "Введите Server Port" "8388")
-password=$(ask_for_input "Введите Password")
-encryption_method=$(ask_for_input "Введите Encryption Method" "aes-256-gcm")
+server_ip=$(ask_for_input "input Server IP")
+server_port=$(ask_for_input "input Server Port" "def:8388")
+password=$(ask_for_input "input your Password")
+encryption_method=$(ask_for_input "Encryption Method" "def:aes-256-gcm")
 
-# Создание JSON-конфигурации
 config_json=$(cat <<EOF
 {
     "server":"$server_ip",
@@ -45,22 +43,18 @@ config_json=$(cat <<EOF
 EOF
 )
 
-# Запись конфигурации в файл
 config_path="/etc/shadowsocks-libev/config.json"
 echo "$config_json" | sudo tee "$config_path" > /dev/null
 
-# Запуск и включение службы Shadowsocks-libev
 sudo systemctl start shadowsocks-libev
 sudo systemctl enable shadowsocks-libev
 
-# Настройка брандмауэра
 sudo ufw allow $server_port/tcp
 sudo ufw allow $server_port/udp
 sudo ufw allow 22/tcp
 sudo ufw allow 22/udp
 sudo ufw --force enable
 
-# Перезапуск службы Shadowsocks-libev
 sudo systemctl restart shadowsocks-libev
 
-echo "Конфигурация завершена и Shadowsocks-libev настроен."
+echo "complite"
