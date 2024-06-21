@@ -47,6 +47,7 @@ echo "$config_json" | sudo tee "$config_path" > /dev/null
 sudo systemctl start shadowsocks-libev
 sudo systemctl enable shadowsocks-libev
 
+sudo apt install ufw
 sudo ufw allow $server_port/tcp
 sudo ufw allow $server_port/udp
 sudo ufw allow 22/tcp
