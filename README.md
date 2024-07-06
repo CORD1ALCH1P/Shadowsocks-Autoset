@@ -26,6 +26,5 @@ sudo chmod +x /Shadowsocks-Autoset/mulpla-run.sh
 third step:
 ```
 sudo ./Shadowsocks-Autoset/mulpla-run.sh
-'''
-
-FOR DOCKER VERSION CHESK OUT THE DOCKER_V BRANSH
+```
+FOR DOCKER VERSION check out THE DOCKER_V BRANSH
