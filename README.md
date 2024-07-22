@@ -6,7 +6,7 @@ git clone https://github.com/CORD1ALCH1P/Shadowsocks-Autoset.git
 ```
 Second step: (if it doesn't work, you can use: cd /Shadowsocks-Autoset and than sudo chmod +x run.sh)
 ```
-sudo chmod +x /Shadowsocks-Autoset/run.sh
+sudo chmod +x Shadowsocks-Autoset/run.sh
 ```
 third step:
 ```
