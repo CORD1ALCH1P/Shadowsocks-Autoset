@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  shadowsocks:
+    build: .
+    ports:
+      - "8388:8388/tcp"
+      - "8388:8388/udp"
+    stdin_open: true
+    tty: true
