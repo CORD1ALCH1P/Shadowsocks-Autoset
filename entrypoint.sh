@@ -1,5 +1,9 @@
 #!/bin/bash
 
+sudo apt update && sudo apt upgrade -y
+
+sudo apt install shadowsocks-libev -y
+
 ask_for_input() {
     local prompt="$1"
     local default_value="$2"
@@ -16,16 +20,21 @@ ask_for_input() {
             echo "$var"
             return
         else
-            echo "invalid input"
+            echo "Ошибка: ввод не может быть пустым."
         fi
     done
 }
 
-server_ip=$(ask_for_input "input Server IP")
-server_port=$(ask_for_input "input Server Port" "8388")
-password=$(ask_for_input "input your Password")
-encryption_method=$(ask_for_input "Encryption Method" "aes-256-cfb")
+#  Shadowsocks cred's
+server_ip=$(ask_for_input "Введите IP сервера" "0.0.0.0")
+server_port=$(ask_for_input "Введите порт сервера" "8388")
+password=$(ask_for_input "Введите пароль")
+encryption_method=$(ask_for_input "Введите метод шифрования" "aes-256-cfb")
 
+# SSH cust port
+ssh_port=$(ask_for_input "Введите порт для SSH (по умолчанию 22)" "22")
+
+# creatin' config Shadowsocks
 config_json=$(cat <<EOF
 {
     "server":"$server_ip",
@@ -38,21 +47,40 @@ config_json=$(cat <<EOF
 EOF
 )
 
+# saving conf Shadowsocks
 config_path="/etc/shadowsocks-libev/config.json"
-echo "$config_json" | tee "$config_path" > /dev/null
+echo "$config_json" | sudo tee "$config_path" > /dev/null
 
-# Start Shadowsocks
-systemctl start shadowsocks-libev
-systemctl enable shadowsocks-libev
+# UFW setup
+sudo apt install ufw -y
 
-# Configure UFW
-ufw allow $server_port/tcp
-ufw allow $server_port/udp
-ufw allow 22/tcp
-ufw allow 22/udp
-ufw --force enable
+# Deletion of all existing rules
+sudo ufw --force reset
 
-# Restart Shadowsocks to apply settings
-systemctl restart shadowsocks-libev
+# necessary prots
+sudo ufw allow $ssh_port/tcp comment "SSH"
+sudo ufw allow $server_port/tcp comment "Shadowsocks TCP"
+sudo ufw allow $server_port/udp comment "Shadowsocks UDP"
 
-echo "Complete"
+# Adding false open ports for confusion
+fake_ports=(2459 2362 5624 52346 5422)
+for port in "${fake_ports[@]}"; do
+    sudo ufw allow $port/tcp comment "Ложный порт"
+    sudo ufw allow $port/udp comment "Ложный порт"
+done
+
+sudo ufw --force enable
+
+sudo sed -i "s/^#Port 22/Port $ssh_port/" /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
+sudo systemctl restart shadowsocks-libev
+sudo systemctl enable shadowsocks-libev
+
+# Conclusion
+echo "Установка завершена!"
+echo "Порт SSH: $ssh_port"
+echo "Порт Shadowsocks: $server_port"
+echo "Пароль Shadowsocks: $password"
+echo "Метод шифрования: $encryption_method"
+echo "Ложные порты: ${fake_ports[*]}"
