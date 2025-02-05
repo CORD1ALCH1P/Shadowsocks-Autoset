@@ -20,19 +20,19 @@ ask_for_input() {
             echo "$var"
             return
         else
-            echo "Ошибка: ввод не может быть пустым."
+            echo "Error: the input cannot be empty."
         fi
     done
 }
 
 #  Shadowsocks cred's
-server_ip=$(ask_for_input "Введите IP сервера" "0.0.0.0")
-server_port=$(ask_for_input "Введите порт сервера" "8388")
-password=$(ask_for_input "Введите пароль")
-encryption_method=$(ask_for_input "Введите метод шифрования" "aes-256-cfb")
+server_ip=$(ask_for_input "Enter the IP of the server")
+server_port=$(ask_for_input "Enter server port." "8388.")
+password=$(ask_for_input "Enter password.")
+encryption_method=$(ask_for_input "Enter encryption method" "aes-256-cfb")
 
 # SSH cust port
-ssh_port=$(ask_for_input "Введите порт для SSH (по умолчанию 22)" "22")
+ssh_port=$(ask_for_input "Enter the port for SSH (default is 22)." "22")
 
 # creatin' config Shadowsocks
 config_json=$(cat <<EOF
@@ -65,8 +65,8 @@ sudo ufw allow $server_port/udp comment "Shadowsocks UDP"
 # Adding false open ports for confusion
 fake_ports=(2459 2362 5624 52346 5422)
 for port in "${fake_ports[@]}"; do
-    sudo ufw allow $port/tcp comment "Ложный порт"
-    sudo ufw allow $port/udp comment "Ложный порт"
+    sudo ufw allow $port/tcp comment "Fake port"
+    sudo ufw allow $port/udp comment "Fake port"
 done
 
 sudo ufw --force enable
@@ -78,9 +78,9 @@ sudo systemctl restart shadowsocks-libev
 sudo systemctl enable shadowsocks-libev
 
 # Conclusion
-echo "Установка завершена!"
-echo "Порт SSH: $ssh_port"
-echo "Порт Shadowsocks: $server_port"
-echo "Пароль Shadowsocks: $password"
-echo "Метод шифрования: $encryption_method"
-echo "Ложные порты: ${fake_ports[*]}"
+echo "Installation complete!"
+echo "SSH Port: $ssh_port"
+echo "Shadowsocks port: $server_port"
+echo "The password is Shadowsocks: $password"
+echo "Encryption Method: $encryption_method"
+echo "False ports: ${fake_ports[*]}"
